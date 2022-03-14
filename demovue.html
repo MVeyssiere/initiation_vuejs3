@@ -11,20 +11,8 @@
 <body>
     <div id="app">
         <h1>The checklist</h1>
-        <input type="text" v-model="message" />
-        <a href="#" @click="ajouterNote" v-if="message != ''"> Ajouter </a>
-        {{ message }}
-        <!-- <p v-bind:title="message" v-for=" todo in todos" :key="todo.id" @click="inverser">
-            {{ todo.content }} -->
-        <p v-bind:title="message" v-for=" todo in todos" @click="inverser">
-            {{ todo }}
-
-        </p>
-
+        <ajout @nouvellenote="ajouterNote"></ajout>
         <note v-for="todo in todos" v-bind:content="todo"></note>
-
-
-
     </div>
 
     <script>
@@ -32,10 +20,6 @@
             data(){
                 return {
                     message: 'Hello world !',
-                    // todos: [
-                    //     { id: 0, content: 'Apprendre Vue JS'},
-                    //     { id: 1, content: 'Sauver le monde'}
-                    // ]
                     todos: [ "Sauver le monde", "Escalader l'everest", "Grimper au Machu Pichu"]
                 }
             },
@@ -43,20 +27,42 @@
                 inverser(){
                     this.todos.reverse();
                 },
-                ajouterNote(){
-                    this.todos.push(this.message);
+                ajouterNote(message){
+                    this.todos.push(message);
                     this.message = '';
                 }
             }
         })
         
+        // données depuis l'instance de vue principale vers le component
         vm.component('note', {
             props: ['content'],
             template: `
             <p> {{ content }} </p>            
             `
         })
-        
+
+        // le component reçoit des infos qu'il renvoit à la vue
+        vm.component('ajout', {
+            props: [],
+            emits:['nouvellenote'],
+            data(){
+                return{
+                    interne: 'Nouveau message'
+                }
+            },
+            methods:{
+                enregistrementNote(){
+                    this.$emit('nouvellenote', this.interne)
+                    this.interne='';
+                }
+            },
+            template: `
+            <input type="text" v-model="interne" />
+            <a href="#" @click="enregistrementNote" v-if="interne != ''"> Ajouter </a>
+            {{ interne }}
+            `
+        })
         
         vm.mount('#app')
     </script>
