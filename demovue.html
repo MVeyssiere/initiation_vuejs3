@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The checklist</title>
+    <script src="https://unpkg.com/vue@3"></script>
+
+</head>
+<body>
+    <div id="app">
+        <h1>The checklist</h1>
+        <input type="text" v-model="message" />
+        <a href="#" @click="ajouterNote" v-if="message != ''"> Ajouter </a>
+        {{ message }}
+        <!-- <p v-bind:title="message" v-for=" todo in todos" :key="todo.id" @click="inverser">
+            {{ todo.content }} -->
+        <p v-bind:title="message" v-for=" todo in todos" @click="inverser">
+            {{ todo }}
+
+        </p>
+
+        <note v-for="todo in todos" v-bind:content="todo"></note>
+
+
+
+    </div>
+
+    <script>
+        const vm = Vue.createApp({
+            data(){
+                return {
+                    message: 'Hello world !',
+                    // todos: [
+                    //     { id: 0, content: 'Apprendre Vue JS'},
+                    //     { id: 1, content: 'Sauver le monde'}
+                    // ]
+                    todos: [ "Sauver le monde", "Escalader l'everest", "Grimper au Machu Pichu"]
+                }
+            },
+            methods:{
+                inverser(){
+                    this.todos.reverse();
+                },
+                ajouterNote(){
+                    this.todos.push(this.message);
+                    this.message = '';
+                }
+            }
+        })
+        
+        vm.component('note', {
+            props: ['content'],
+            template: `
+            <p> {{ content }} </p>            
+            `
+        })
+        
+        
+        vm.mount('#app')
+    </script>
+</body>
+</html>
